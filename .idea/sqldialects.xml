@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/classes.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/files.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/homework_attachments.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/homeworks.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/students.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/submissions.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/submissions_attachments.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/time_slots.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/time_table.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/webapp/static/sql/user.sql" dialect="MySQL" />
   </component>
 </project>
