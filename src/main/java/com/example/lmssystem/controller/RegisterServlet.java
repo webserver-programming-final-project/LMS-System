@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -15,6 +16,11 @@ public class RegisterServlet extends HttpServlet {
     private final UserService userService = new UserService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            resp.sendRedirect(req.getContextPath()+"/home");
+            return;
+        }
         req.getRequestDispatcher("/WEB-INF/views/auth/register.jsp").forward(req, resp);
     }
 
@@ -27,9 +33,10 @@ public class RegisterServlet extends HttpServlet {
         System.out.println(isProfessor);
         try {
             User user = userService.register(email, password, name, isProfessor);
-            req.setAttribute("email", user.getEmail());
-            req.setAttribute("success", "회원가입에 성공하였습니다!");
-            req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
+            HttpSession session = req.getSession();
+            session.setAttribute("email", user.getEmail());
+            session.setAttribute("success","회원가입에 성공하였습니다!");
+            resp.sendRedirect(req.getContextPath()+"/login");
         } catch (Exception e) {
             req.setAttribute("error", e.getMessage());
             doGet(req, resp);
