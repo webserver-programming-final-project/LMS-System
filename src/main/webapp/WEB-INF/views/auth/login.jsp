@@ -17,11 +17,13 @@
     <div class="alert alert-danger">
         ${sessionScope.error}
     </div>
+    <%session.removeAttribute("error");%>
 </c:if>
 <c:if test="${not empty sessionScope.success}">
     <div class="alert alert-info">
         ${sessionScope.success}
     </div>
+    <%session.removeAttribute("success");%>
 </c:if>
 <div class="wrapper container min-vh-100 d-flex justify-content-center align-items-center">
     <form action="login" method="post">
