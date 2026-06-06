@@ -17,6 +17,7 @@
     <div class="alert alert-danger">
             ${error}
     </div>
+    <%session.removeAttribute("error");%>
 </c:if>
 <div class="wrapper container min-vh-100 d-flex justify-content-center align-items-center">
     <form action="register" method="post">
