@@ -20,6 +20,10 @@ public class AuthFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
         String path = req.getRequestURI().substring(req.getContextPath().length());
+        if (path.startsWith("/static/") || path.equals("/login") || path.equals("/register")) {
+            filterChain.doFilter(req, resp);
+            return;
+        }
         HttpSession session = req.getSession(false);
         User loginUser = session == null ? null : (User) session.getAttribute("user");
         if (loginUser == null) {

@@ -19,7 +19,7 @@
     </filter>
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
-        <url-pattern>/hello-servlet</url-pattern>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <!-- [F09] 공통 에러 페이지 -->
