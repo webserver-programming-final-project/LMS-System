@@ -27,9 +27,9 @@ public class AuthFilter implements Filter {
         HttpSession session = req.getSession(false);
         User loginUser = session == null ? null : (User) session.getAttribute("user");
         if (loginUser == null) {
-            req.setAttribute("error", "로그인이 필요합니다.");
+            req.getSession().setAttribute("error", "로그인이 필요합니다.");
             req.getSession().setAttribute("redirectPath",path);
-            req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
+            resp.sendRedirect(req.getContextPath()+"/login");
             return;
         }
         boolean isProfessor = loginUser.isProfessor();

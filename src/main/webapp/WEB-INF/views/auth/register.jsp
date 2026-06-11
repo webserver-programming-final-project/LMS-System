@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <html>
 <head>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/adminlte.css">
@@ -16,6 +17,7 @@
     <div class="alert alert-danger">
             ${error}
     </div>
+    <%session.removeAttribute("error");%>
 </c:if>
 <div class="wrapper container min-vh-100 d-flex justify-content-center align-items-center">
     <form action="register" method="post">

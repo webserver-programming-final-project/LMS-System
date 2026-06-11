@@ -16,6 +16,11 @@ public class LoginServlet extends HttpServlet {
     private final UserService userService = new UserService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            resp.sendRedirect(req.getContextPath()+"/home");
+            return;
+        }
         req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
     }
     @Override
@@ -31,8 +36,9 @@ public class LoginServlet extends HttpServlet {
             if (redirectPath == null) redirectPath = "/home";
             resp.sendRedirect(req.getContextPath() + redirectPath);
         } catch (IllegalArgumentException e) {
-            req.setAttribute("error", e.getMessage());
-            req.setAttribute("email", email);
+            HttpSession session = req.getSession();
+            session.setAttribute("error", e.getMessage());
+            session.setAttribute("email", email);
             doGet(req, resp);
         }
     }

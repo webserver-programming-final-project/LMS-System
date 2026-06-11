@@ -13,15 +13,17 @@
     <title>로그인</title>
 </head>
 <body>
-<c:if test="${not empty error}">
+<c:if test="${not empty sessionScope.error}">
     <div class="alert alert-danger">
-        ${error}
+        ${sessionScope.error}
     </div>
+    <%session.removeAttribute("error");%>
 </c:if>
-<c:if test="${not empty success}">
+<c:if test="${not empty sessionScope.success}">
     <div class="alert alert-info">
-        ${success}
+        ${sessionScope.success}
     </div>
+    <%session.removeAttribute("success");%>
 </c:if>
 <div class="wrapper container min-vh-100 d-flex justify-content-center align-items-center">
     <form action="login" method="post">
@@ -32,7 +34,7 @@
 
             <div class="card-body">
                 <input type="email" name="email" id="email_field"
-                       class="form-control mb-2" placeholder="email" value="${email}" required>
+                       class="form-control mb-2" placeholder="email" value="${sessionScope.email}" required>
 
                 <input type="password" name="password" id="password_field"
                        class="form-control mb-2" placeholder="password" required>
