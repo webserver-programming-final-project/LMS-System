@@ -57,6 +57,7 @@
     </style>
 </head>
 <body>
+<%--주간시간표 수정 --%>
 
 <%@ include file="../layout/header.jsp" %>
 
