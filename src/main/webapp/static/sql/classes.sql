@@ -2,6 +2,7 @@ create schema if not exists lms_system;
 use lms_system;
 create table if not exists classes(
     id bigint AUTO_INCREMENT not null,
+    classroom VARCHAR(50) not null default '',
     title VARCHAR(50) not null,
     description TEXT not null,
     professor_id bigint not null,
