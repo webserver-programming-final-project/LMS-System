@@ -1,16 +1,7 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: hoshi
-  Date: 26. 6. 1.
-  Time: 오후 3:04
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<%@ page pageEncoding="UTF-8" %>
+<footer class="app-footer">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span>© 2026 LMS System</span>
+        <span>Web Server Programming Final Exam</span>
+    </div>
+</footer>

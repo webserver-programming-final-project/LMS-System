@@ -17,6 +17,14 @@
         .page-container { max-width: 1000px; margin: 0 auto; padding: 32px 16px; }
         .table td { vertical-align: middle; }
         .description-cell { max-width: 360px; white-space: pre-wrap; }
+        .submit-toast {
+            position: fixed;
+            top: 76px;
+            right: 24px;
+            z-index: 1050;
+            min-width: 260px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .14);
+        }
     </style>
 </head>
 <body>
@@ -26,7 +34,24 @@
 <div class="page-container">
     <c:if test="${not empty error}">
         <div class="alert alert-danger">${error}</div>
+        <%
+            session.removeAttribute("error");
+        %>
     </c:if>
+
+    <c:if test="${not empty sessionScope.success}">
+        <div class="alert alert-success">
+                ${sessionScope.success}
+        </div>
+        <%
+            session.removeAttribute("success");
+        %>
+    </c:if>
+<%--    <% if (homeworkSubmitMessage != null) { %>--%>
+<%--        <div id="submitToast" class="alert alert-success submit-toast" role="alert">--%>
+<%--            <%= homeworkSubmitMessage %>--%>
+<%--        </div>--%>
+<%--    <% } %>--%>
 
     <c:if test="${canAddHomework}">
         <div class="card mb-4">
@@ -118,6 +143,15 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    var submitToast = document.getElementById('submitToast');
+    if (submitToast) {
+        setTimeout(function() {
+            submitToast.style.display = 'none';
+        }, 3000);
+    }
+</script>
 
 </body>
 </html>

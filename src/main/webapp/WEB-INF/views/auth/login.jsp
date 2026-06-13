@@ -14,13 +14,13 @@
 </head>
 <body>
 <c:if test="${not empty sessionScope.error}">
-    <div class="alert alert-danger">
+    <div class="alert alert-danger toast-danger" role="alert">
         ${sessionScope.error}
     </div>
     <%session.removeAttribute("error");%>
 </c:if>
 <c:if test="${not empty sessionScope.success}">
-    <div class="alert alert-info">
+    <div class="alert alert-info submit-toast" role="alert">
         ${sessionScope.success}
     </div>
     <%session.removeAttribute("success");%>

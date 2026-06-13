@@ -32,8 +32,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
             String redirectPath = (String) session.getAttribute("redirectPath");
-            // TODO : 메인화면 완성 되는 대로 대상 수정하기
-            if (redirectPath == null) redirectPath = "/home";
+            if (redirectPath == null) redirectPath = "/lectures";
             resp.sendRedirect(req.getContextPath() + redirectPath);
         } catch (IllegalArgumentException e) {
             HttpSession session = req.getSession();
