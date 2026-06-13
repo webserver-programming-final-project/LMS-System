@@ -12,21 +12,20 @@ public class LectureService {
     private final LectureRepository lectureRepository = new LectureRepository();
 
     public void addLecture(Lecture lecture, List<TimeTable> timeTables) throws SQLException {
-        if (lecture.getTitle() == null || lecture.getTitle().trim().isEmpty())
-            throw new IllegalArgumentException("강의명을 입력해주세요.");
-        if (lecture.getClassroom() == null || lecture.getClassroom().trim().isEmpty())
-            throw new IllegalArgumentException("강의실을 입력해주세요.");
-        if (timeTables == null || timeTables.isEmpty())
-            throw new IllegalArgumentException("요일과 교시를 최소 하나 이상 선택해주세요.");
-        for (TimeTable tt : timeTables) {
-            boolean conflict = lectureRepository.hasTimeConflict(tt.getDays(), tt.getSlotId(), null);
-            if (conflict)
-                throw new IllegalArgumentException(
-                    tt.getDays() + "요일 " + tt.getSlotId() + "교시는 이미 다른 강의가 등록되어 있습니다.");
-        }
-
+        validateLecture(lecture, timeTables);
         lectureRepository.save(lecture, timeTables);
     }
+
+    public void updateLecture(Lecture lecture, List<TimeTable> timeTables) throws SQLException {
+        validateLecture(lecture, timeTables);
+        if (lecture.getId() == null)
+            throw new IllegalArgumentException("강의 ID가 필요합니다.");
+        if (!lectureRepository.isProfessorOfClass(lecture.getProfessorId(), lecture.getId()))
+            throw new SecurityException("강의를 수정할 권한이 없습니다.");
+
+        lectureRepository.update(lecture, timeTables);
+    }
+
     public List<Lecture> getAllLectures() throws SQLException {
         return lectureRepository.findAll();
     }
@@ -36,10 +35,28 @@ public class LectureService {
     public List<TimeTable> getTimeTableByClassId(Long classId) throws SQLException {
         return lectureRepository.findTimeTableByClassId(classId);
     }
+
+    public List<TimeTable> getAllTimeSlots() throws SQLException {
+        return lectureRepository.findAllTimeSlots();
+    }
+
     public List<Lecture> getLecturesByProfessor(Long professorId) throws SQLException {
         return lectureRepository.findByProfessorId(professorId);
     }
     public List<Lecture> getLecturesByStudent(Long userId) throws SQLException {
         return lectureRepository.findByStudentId(userId);
+    }
+
+    public List<Lecture> getAvailableLecturesForStudent(Long userId) throws SQLException {
+        return lectureRepository.findNotEnrolledByStudentId(userId);
+    }
+
+    private void validateLecture(Lecture lecture, List<TimeTable> timeTables) {
+        if (lecture.getTitle() == null || lecture.getTitle().trim().isEmpty())
+            throw new IllegalArgumentException("강의명을 입력해주세요.");
+        if (lecture.getClassroom() == null || lecture.getClassroom().trim().isEmpty())
+            throw new IllegalArgumentException("강의실을 입력해주세요.");
+        if (timeTables == null || timeTables.isEmpty())
+            throw new IllegalArgumentException("요일과 교시를 최소 하나 이상 선택해주세요.");
     }
 }

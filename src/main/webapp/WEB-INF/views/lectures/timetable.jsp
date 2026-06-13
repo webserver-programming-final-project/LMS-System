@@ -17,17 +17,16 @@
 %>
 
 <%
-    Map<String, Map<Integer, Lecture>> grid =
-        (Map<String, Map<Integer, Lecture>>) request.getAttribute("grid");
+    Map<String, Map<Integer, List<Lecture>>> grid =
+        (Map<String, Map<Integer, List<Lecture>>>) request.getAttribute("grid");
     List<Lecture> myLectures = (List<Lecture>) request.getAttribute("myLectures");
     User loginUser = (User) session.getAttribute("user");
+    int[] hours = (int[]) request.getAttribute("hours");
 
     String[] days  = {"월", "화", "수", "목", "금"};
-    int[]    slots = {21, 22, 23, 24, 25, 26};
-    String[] times = {
-        "09:00~10:15", "10:30~11:45", "12:00~13:15",
-        "13:30~14:45", "15:00~16:15", "16:30~17:45"
-    };
+    if (hours == null) {
+        hours = new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+    }
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -52,7 +51,9 @@
             padding: 6px 4px;
             font-size: 12px;
             line-height: 1.4;
+            margin-bottom: 4px;
         }
+        .lecture-block:last-child { margin-bottom: 0; }
         .empty-cell { background: #fff; }
     </style>
 </head>
@@ -76,33 +77,38 @@
         <table class="timetable">
             <thead>
                 <tr>
-                    <th class="time-col">교시 / 시간</th>
+                    <th class="time-col">시간</th>
                     <% for (String day : days) { %>
                         <th><%= day %></th>
                     <% } %>
                 </tr>
             </thead>
             <tbody>
-                <% for (int i = 0; i < slots.length; i++) {
-                       int slotNo = slots[i];
+                <% for (int hour : hours) {
+                       String timeLabel = String.format("%02d:00~%02d:00", hour, hour + 1);
                 %>
                     <tr>
                         <td class="time-col">
-                            <%= slotNo %>교시<br>
-                            <small><%= times[i] %></small>
+                            <%= timeLabel %>
                         </td>
                         <% for (String day : days) {
-                               Lecture lec = (grid != null && grid.get(day) != null)
-                                             ? grid.get(day).get(slotNo) : null;
+                               List<Lecture> lectures = (grid != null && grid.get(day) != null)
+                                             ? grid.get(day).get(hour) : null;
+                               boolean empty = lectures == null || lectures.isEmpty();
                         %>
-                            <td class="<%= lec == null ? "empty-cell" : "" %>">
-                                <% if (lec != null) { %>
+                            <td class="<%= empty ? "empty-cell" : "" %>">
+                                <% if (!empty) {
+                                       for (Lecture lec : lectures) {
+                                %>
                                     <div class="lecture-block"
                                          style="background-color: <%= getLectureColor(lec.getId()) %>">
                                         <strong><%= lec.getTitle() %></strong><br>
                                         <small><%= lec.getClassroom() %></small>
                                     </div>
-                                <% } %>
+                                <%
+                                       }
+                                   }
+                                %>
                             </td>
                         <% } %>
                     </tr>

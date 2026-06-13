@@ -36,7 +36,14 @@ public class EnrollServlet extends HttpServlet {
             Long classId = Long.parseLong(classIdParam);
             boolean alreadyEnrolled = enrollRepository.isEnrolled(loginUser.getId(), classId);
             if (alreadyEnrolled) {
-                req.getSession().setAttribute("enrollMsg", "이미 수강 신청한 강의입니다.");
+                req.getSession().setAttribute("error", "이미 수강 신청한 강의입니다.");
+                resp.sendRedirect(req.getContextPath() + "/lectures");
+                return;
+            }
+
+            String conflictMessage = enrollRepository.findScheduleConflict(loginUser.getId(), classId);
+            if (conflictMessage != null) {
+                req.getSession().setAttribute("error", "수강 신청이 제한되었습니다: " + conflictMessage);
                 resp.sendRedirect(req.getContextPath() + "/lectures");
                 return;
             }
@@ -46,7 +53,7 @@ public class EnrollServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/lectures");
 
         } catch (SQLException e) {
-            req.getSession().setAttribute("enrollMsg", "수강 신청 중 오류가 발생했습니다: " + e.getMessage());
+            req.getSession().setAttribute("error", "수강 신청 중 오류가 발생했습니다: " + e.getMessage());
             resp.sendRedirect(req.getContextPath() + "/lectures");
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 강의 ID입니다.");

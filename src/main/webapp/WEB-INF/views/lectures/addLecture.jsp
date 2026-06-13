@@ -1,8 +1,9 @@
 <%@ page pageEncoding="UTF-8" %>
-<%@ page import="com.example.lmssystem.entity.User" %>
+<%@ page import="com.example.lmssystem.entity.TimeTable" %>
+<%@ page import="java.util.List" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
-    String errorMsg = (String) request.getAttribute("error");
+    List<TimeTable> timeSlots = (List<TimeTable>) request.getAttribute("timeSlots");
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -58,12 +59,20 @@
                             </select>
                             <select name="slots" class="form-control" style="width:220px;" required>
                                 <option value="">교시 선택</option>
-                                <option value="10">21교시 (09:00~10:15)</option>
-                                <option value="11">22교시 (10:30~11:45)</option>
-                                <option value="12">23교시 (12:00~13:15)</option>
-                                <option value="13">24교시 (13:30~14:45)</option>
-                                <option value="14">25교시 (15:00~16:15)</option>
-                                <option value="15">26교시 (16:30~17:45)</option>
+                                <%
+                                    if (timeSlots != null) {
+                                        for (TimeTable slot : timeSlots) {
+                                            Long optionSlotId = slot.getSlotId();
+                                            String startTime = slot.getStartTime();
+                                            String endTime = slot.getEndTime();
+                                %>
+                                    <option value="<%= optionSlotId %>">
+                                        <%= slot.getSlotNo() %>교시 (<%= startTime %>~<%= endTime %>)
+                                    </option>
+                                <%
+                                        }
+                                    }
+                                %>
                             </select>
                             <button type="button" class="btn btn-danger btn-sm"
                                     onclick="removeTimeRow(this)">삭제</button>

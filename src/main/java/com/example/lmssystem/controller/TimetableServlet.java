@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.*;
 
 @WebServlet("/timetable")
@@ -36,22 +37,28 @@ public class TimetableServlet extends HttpServlet {
             }
 
             String[] days = {"월", "화", "수", "목", "금"};
-            Map<String, Map<Integer, Lecture>> grid = new LinkedHashMap<>();
+            int[] hours = {9, 10, 11, 12, 13, 14, 15, 16, 17};
+            Map<String, Map<Integer, List<Lecture>>> grid = new LinkedHashMap<>();
             for (String day : days) {
-                grid.put(day, new HashMap<>());
+                Map<Integer, List<Lecture>> dayGrid = new HashMap<>();
+                for (int hour : hours) {
+                    dayGrid.put(hour, new ArrayList<>());
+                }
+                grid.put(day, dayGrid);
             }
 
             for (Lecture lec : myLectures) {
                 List<TimeTable> tts = lectureService.getTimeTableByClassId(lec.getId());
                 for (TimeTable tt : tts) {
                     if (grid.containsKey(tt.getDays())) {
-                        grid.get(tt.getDays()).put(tt.getSlotNo(), lec);
+                        addLectureToHourlyGrid(grid.get(tt.getDays()), tt, lec, hours);
                     }
                 }
             }
 
             req.setAttribute("grid", grid);
             req.setAttribute("myLectures", myLectures);
+            req.setAttribute("hours", hours);
             req.getRequestDispatcher("/WEB-INF/views/lectures/timetable.jsp")
                .forward(req, resp);
 
@@ -61,6 +68,20 @@ public class TimetableServlet extends HttpServlet {
                .forward(req, resp);
         } finally {
             System.out.println("시간표 조회 완료 - user: " + loginUser.getId());
+        }
+    }
+
+    private void addLectureToHourlyGrid(Map<Integer, List<Lecture>> dayGrid, TimeTable timeTable,
+                                        Lecture lecture, int[] hours) {
+        LocalTime lectureStart = LocalTime.parse(timeTable.getStartTime());
+        LocalTime lectureEnd = LocalTime.parse(timeTable.getEndTime());
+
+        for (int hour : hours) {
+            LocalTime hourStart = LocalTime.of(hour, 0);
+            LocalTime hourEnd = hourStart.plusHours(1);
+            if (lectureStart.isBefore(hourEnd) && lectureEnd.isAfter(hourStart)) {
+                dayGrid.get(hour).add(lecture);
+            }
         }
     }
 }

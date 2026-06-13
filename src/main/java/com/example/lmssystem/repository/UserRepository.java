@@ -46,6 +46,7 @@ public class UserRepository {
                     user.setId(resultSet.getLong("id"));
                     user.setName(resultSet.getString("name"));
                     user.setCreatedAt(resultSet.getTimestamp("created_at"));
+                    user.setProfessor(resultSet.getBoolean("is_professor"));
                     return user;
                 }
             }

@@ -2,12 +2,14 @@ package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Lecture;
 import com.example.lmssystem.entity.TimeTable;
+import com.example.lmssystem.entity.User;
 import com.example.lmssystem.service.LectureService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,7 +25,14 @@ public class LectureServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String idParam = req.getParameter("id");
+        HttpSession session = req.getSession(false);
+        User loginUser = session == null ? null : (User) session.getAttribute("user");
 
+        if (loginUser == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+        System.out.println(loginUser.isProfessor());
         if (idParam != null) {
             Long id = null;
             try {
@@ -53,8 +62,17 @@ public class LectureServlet extends HttpServlet {
 
         } else {
             try {
-                List<Lecture> lectureList = lectureService.getAllLectures();
-                req.setAttribute("lectureList", lectureList);
+                if (loginUser != null && loginUser.isProfessor()) {
+                    List<Lecture> lectureList = lectureService.getLecturesByProfessor(loginUser.getId());
+                    req.setAttribute("lectureList", lectureList);
+                    req.setAttribute("viewMode", "professor");
+                } else {
+                    List<Lecture> enrolledLectureList = lectureService.getLecturesByStudent(loginUser.getId());
+                    List<Lecture> availableLectureList = lectureService.getAvailableLecturesForStudent(loginUser.getId());
+                    req.setAttribute("enrolledLectureList", enrolledLectureList);
+                    req.setAttribute("availableLectureList", availableLectureList);
+                    req.setAttribute("viewMode", "student");
+                }
                 req.getRequestDispatcher("/WEB-INF/views/lectures/lectureList.jsp")
                    .forward(req, resp);
             } catch (SQLException e) {

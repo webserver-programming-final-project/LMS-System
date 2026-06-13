@@ -110,7 +110,6 @@
         
         <jsp:include page="/WEB-INF/views/lectures/lectureActions.jsp">
             <jsp:param name="lectureId" value="<%= lecture.getId() %>"/>
-            <jsp:param name="isProfessor" value="<%= loginUser != null && loginUser.isProfessor() %>"/>
         </jsp:include>
 
     <% } %>

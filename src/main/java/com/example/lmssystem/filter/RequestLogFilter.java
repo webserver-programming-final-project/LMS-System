@@ -16,8 +16,8 @@ public class RequestLogFilter implements Filter {
             "/login",
             "/register",
             "/logout",
-            "/submitHomework.jsp",
-            "/processSubmitHomework.jsp"
+            "/homework/submit",
+            "/submitHomework.jsp"
     );
     private final LogRepository logRepository = new LogRepository();
 

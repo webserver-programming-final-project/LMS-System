@@ -23,6 +23,7 @@ public class AddLectureServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        setTimeSlots(req);
         req.getRequestDispatcher("/WEB-INF/views/lectures/addLecture.jsp")
            .forward(req, resp);
     }
@@ -66,12 +67,22 @@ public class AddLectureServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/lectures");
         } catch (SQLException e) {
             req.setAttribute("error", "강의 등록 중 오류가 발생했습니다: " + e.getMessage());
+            setTimeSlots(req);
             req.getRequestDispatcher("/WEB-INF/views/lectures/addLecture.jsp")
                .forward(req, resp);
         } catch (IllegalArgumentException e) {
             req.setAttribute("error", e.getMessage());
+            setTimeSlots(req);
             req.getRequestDispatcher("/WEB-INF/views/lectures/addLecture.jsp")
                .forward(req, resp);
+        }
+    }
+
+    private void setTimeSlots(HttpServletRequest req) throws ServletException {
+        try {
+            req.setAttribute("timeSlots", lectureService.getAllTimeSlots());
+        } catch (SQLException e) {
+            throw new ServletException("교시 목록 조회 중 오류가 발생했습니다.", e);
         }
     }
 }

@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.net.URLDecoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="com.example.lmssystem.entity.User" %>
 <%@ include file="dbconn.jsp" %>
 <%
@@ -84,8 +86,11 @@
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
         for (Cookie c : cookies) {
-            if ("student_no".equals(c.getName())) cookieStudentNo = c.getValue();
-            else if ("student_name".equals(c.getName())) cookieStudentName = c.getValue();
+            if ("student_no".equals(c.getName())) {
+                cookieStudentNo = URLDecoder.decode(c.getValue(), StandardCharsets.UTF_8);
+            } else if ("student_name".equals(c.getName())) {
+                cookieStudentName = URLDecoder.decode(c.getValue(), StandardCharsets.UTF_8);
+            }
         }
     }
 %>
@@ -97,7 +102,7 @@
 </head>
 <body>
 <div class="wrapper container min-vh-100 d-flex justify-content-center align-items-center">
-    <form action="processSubmitHomework.jsp" method="post" enctype="multipart/form-data">
+    <form action="${pageContext.request.contextPath}/homework/submit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="homeworkId" value="<%= homeworkId %>">
         <div class="card" style="min-width: 40vw">
             <div class="card-header">
